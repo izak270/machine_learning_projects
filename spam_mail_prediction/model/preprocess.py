@@ -29,6 +29,24 @@ class Preprocess:
         self.X_train_features = extrac_func.fit_transform(self.X_train)
         self.X_test_features = extrac_func.transform(self.X_test)
 
+    def convert_y_to_int(self):
+        self.Y_train.astype('int')
+        self.Y_test.astype('int')
+
+    def train(self):
+        self.model = LogisticRegression()
+        self.model.fit(self.X_train_features, self.Y_train.astype('int'))
+
+    def scores(self):
+        predictions = self.model.predict(self.X_train_features)
+        predictions_test = self.model.predict(self.X_test_features)
+        accu = accuracy_score(self.Y_test.astype('int'), predictions_test)
+        print(accu)
 
 worker = Preprocess('dataset/mail_data.csv')
 worker.label_encod()
+worker.split_test_train_data()
+worker.feature_extraction()
+worker.convert_y_to_int()
+worker.train()
+worker.scores()
